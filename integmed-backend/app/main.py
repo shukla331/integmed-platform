@@ -15,7 +15,7 @@ from app.api import auth, patients, encounters, prescriptions, abdm, clinical
 
 # Configure logging
 logging.basicConfig(
-    level=getattr(logging, settings.LOG_LEVEL),
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -27,9 +27,9 @@ async def lifespan(app: FastAPI):
     Startup and shutdown events
     """
     # Startup
-    logger.info(f"🏥 Starting IntegMed API - {settings.ENVIRONMENT}")
-    logger.info(f"📊 API Version: {settings.API_VERSION}")
-    logger.info(f"🔒 Debug Mode: {settings.DEBUG}")
+    logger.info("Starting IntegMed API...")
+    logger.info(f"Environment: {settings.ENVIRONMENT}")
+    logger.info(f"API Version: {settings.API_VERSION}")
     
     # Create database tables (in production, use Alembic migrations)
     # Base.metadata.create_all(bind=engine)
@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("🛑 Shutting down IntegMed API")
+    logger.info("Shutting down IntegMed API...")
 
 
 # Create FastAPI app
@@ -46,15 +46,15 @@ app = FastAPI(
     description="Integrated Healthcare Platform - Allopathy + AYUSH",
     version=settings.API_VERSION,
     lifespan=lifespan,
-    docs_url="/api/docs" if settings.DEBUG else None,
-    redoc_url="/api/redoc" if settings.DEBUG else None,
-    openapi_url="/api/openapi.json" if settings.DEBUG else None
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json"
 )
 
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allowed_origins_list,
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,7 +71,9 @@ async def add_process_time_header(request: Request, call_next: Callable):
     
     # Log slow requests
     if process_time > 1.0:
-        logger.warning(f"⚠️ Slow request: {request.method} {request.url.path} took {process_time:.2f}s")
+        logger.warning(
+            f"Slow request: {request.method} {request.url.path} took {process_time:.2f}s"
+        )
     
     return response
 
@@ -93,11 +95,10 @@ async def global_exception_handler(request: Request, exc: Exception):
 @app.get("/health", tags=["Health"])
 async def health_check():
     """
-    Health check endpoint for monitoring
+    Basic health check
     """
     return {
         "status": "healthy",
-        "service": "integmed-backend",
         "version": settings.API_VERSION,
         "environment": settings.ENVIRONMENT
     }
@@ -111,15 +112,13 @@ async def readiness_check():
     try:
         # Test database connection
         from app.core.database import SessionLocal
-        from sqlalchemy import text
         db = SessionLocal()
-        db.execute(text("SELECT 1"))
+        db.execute("SELECT 1")
         db.close()
         
         return {
             "status": "ready",
-            "database": "connected",
-            "version": settings.API_VERSION
+            "database": "connected"
         }
     except Exception as e:
         logger.error(f"Readiness check failed: {e}")
@@ -144,12 +143,13 @@ app.include_router(clinical.router, prefix=f"/api/{settings.API_VERSION}/clinica
 
 @app.get("/", tags=["Root"])
 async def root():
-    """API root endpoint"""
+    """
+    API root endpoint
+    """
     return {
         "message": "IntegMed API - Integrated Healthcare Platform",
         "version": settings.API_VERSION,
-        "environment": settings.ENVIRONMENT,
-        "docs": "/api/docs" if settings.DEBUG else "disabled",
+        "docs": f"/api/docs",
         "health": "/health"
     }
 
