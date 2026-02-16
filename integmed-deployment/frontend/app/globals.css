@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --primary-900: #0A2540;
+  --primary-700: #0F3D5C;
+  --primary-500: #1565C0;
+  --primary-300: #42A5F5;
+  --primary-100: #E3F2FD;
+  
+  --gray-900: #1A1A1A;
+  --gray-700: #424242;
+  --gray-500: #757575;
+  --gray-300: #BDBDBD;
+  --gray-100: #F5F5F5;
+  --gray-50: #FAFAFA;
+  
+  --success: #2E7D32;
+  --warning: #F57C00;
+  --error: #C62828;
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.font-display {
+  font-family: 'Crimson Pro', serif;
+}
+
+.font-mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
