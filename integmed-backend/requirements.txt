@@ -26,7 +26,7 @@ redis==5.0.1
 
 # QR Code Generation
 qrcode[pil]==7.4.2
-pillow==10.2.0
+pillow
 
 # Medical/FHIR
 fhir.resources==7.1.0
