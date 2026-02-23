@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntegMed - Patient Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Friendly Patient Palette */
+            --primary-900: #0A2540;
+            --primary-700: #0F3D5C;
+            --primary-500: #1565C0;
+            --primary-300: #42A5F5;
+            --primary-100: #E3F2FD;
+            
+            --accent-500: #00897B;
+            --accent-100: #E0F2F1;
+            
+            --gray-900: #1A1A1A;
+            --gray-700: #424242;
+            --gray-500: #757575;
+            --gray-300: #BDBDBD;
+            --gray-100: #F5F5F5;
+            --gray-50: #FAFAFA;
+            
+            --success: #2E7D32;
+            --warning: #F57C00;
+            --error: #C62828;
+            
+            --font-display: 'Crimson Pro', serif;
+            --font-body: 'IBM Plex Sans', sans-serif;
+            
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 24px rgba(0,0,0,0.12);
+            
+            --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #E3F2FD 0%, #F5F5F5 100%);
+            color: var(--gray-900);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-300);
+            padding: var(--space-lg) var(--space-xl);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-900);
+        }
+
+        .logo span {
+            color: var(--primary-500);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .notification-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-100);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+        }
+
+        .notification-bell:hover {
+            background: var(--primary-100);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--error);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--primary-100);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-900) 100%);
+            color: white;
+            padding: var(--space-2xl) var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 36px;
+            margin-bottom: var(--space-sm);
+        }
+
+        .hero-subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+            margin-bottom: var(--space-xl);
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: var(--space-lg);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-label {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+
+        .page-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: var(--space-xl);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 120px;
+            height: fit-content;
+        }
+
+        .nav-menu {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-md);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            margin-bottom: var(--space-xs);
+            font-size: 15px;
+            color: var(--gray-700);
+        }
+
+        .nav-item:hover {
+            background: var(--gray-100);
+        }
+
+        .nav-item.active {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-900);
+        }
+
+        .view-all {
+            color: var(--primary-500);
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+        /* Prescription Card */
+        .prescription-card {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
+            border: 2px solid var(--primary-300);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prescription-card::before {
+            content: '℞';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 120px;
+            color: rgba(21, 101, 192, 0.05);
+            font-family: serif;
+        }
+
+        .rx-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-md);
+            position: relative;
+            z-index: 1;
+        }
+
+        .rx-date {
+            font-size: 13px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .rx-status {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent-100);
+            color: var(--accent-500);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .rx-doctor {
+            margin-bottom: var(--space-md);
+        }
+
+        .doctor-name {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .doctor-specialty {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .medications {
+            background: rgba(255,255,255,0.7);
+            padding: var(--space-md);
+            border-radius: 8px;
+            margin-bottom: var(--space-md);
+        }
+
+        .med-item {
+            padding: var(--space-sm) 0;
+            border-bottom: 1px dashed var(--gray-200);
+        }
+
+        .med-item:last-child {
+            border-bottom: none;
+        }
+
+        .med-name {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 2px;
+        }
+
+        .med-dosage {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .rx-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .btn-icon {
+            flex: 1;
+            padding: var(--space-sm) var(--space-md);
+            border: 1px solid var(--gray-300);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xs);
+        }
+
+        .btn-icon:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-700);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Consent Request */
+        .consent-card {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFECB3 100%);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .consent-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .consent-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .consent-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--gray-900);
+        }
+
+        .consent-subtitle {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .consent-details {
+            background: white;
+            padding: var(--space-md);
+            border-radius: 8px;
+            margin-bottom: var(--space-md);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-sm) 0;
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: var(--gray-600);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .consent-actions {
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .btn {
+            flex: 1;
+            padding: var(--space-md);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s var(--ease-smooth);
+        }
+
+        .btn-approve {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #1B5E20;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-deny {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-deny:hover {
+            background: var(--gray-100);
+        }
+
+        /* Health Record Timeline */
+        .timeline {
+            position: relative;
+            padding-left: var(--space-xl);
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary-300), var(--gray-300));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -30px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid var(--primary-500);
+            box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.1);
+        }
+
+        .timeline-content {
+            background: white;
+            padding: var(--space-lg);
+            border-radius: 10px;
+            box-shadow: var(--shadow-sm);
+            border-left: 3px solid var(--primary-300);
+        }
+
+        .timeline-date {
+            font-size: 13px;
+            color: var(--gray-500);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-sm);
+            font-size: 16px;
+        }
+
+        .timeline-facility {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: var(--space-md);
+        }
+
+        .timeline-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--gray-50);
+            border-radius: 6px;
+        }
+
+        .data-point {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 2px;
+        }
+
+        .data-value {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 15px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-2xl) var(--space-lg);
+            color: var(--gray-500);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: var(--space-md);
+            opacity: 0.3;
+        }
+
+        /* Appointment Card */
+        .appointment-card {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+        }
+
+        .appointment-time {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--space-xs);
+        }
+
+        .appointment-date {
+            font-size: 16px;
+            color: var(--gray-600);
+            margin-bottom: var(--space-lg);
+        }
+
+        .appointment-doctor {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: white;
+            border-radius: 8px;
+        }
+
+        .doctor-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary-500);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">Integ<span>Med</span></div>
+            <div class="user-profile">
+                <div class="notification-bell">
+                    🔔
+                    <div class="notification-badge"></div>
+                </div>
+                <div class="profile-info">
+                    <div class="avatar">RK</div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 600;">Rajesh Kumar</div>
+                        <div style="font-size: 12px; color: var(--gray-500);">Patient ID: #12345</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome back, Rajesh!</h1>
+            <p class="hero-subtitle">Your health dashboard • Last updated: Today, 10:30 AM</p>
+            
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Active Prescriptions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Upcoming Appointment</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Health Records</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Pending Consents</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-grid">
+            <!-- Sidebar Navigation -->
+            <div class="sidebar">
+                <div class="nav-menu">
+                    <div class="nav-item active">
+                        <span class="nav-icon">🏠</span>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="nav-item">
+                        <span class="nav-icon">📋</span>
+                        <span>Prescriptions</span>
+                    </div>
+                    <div class="nav-item">
+                        <span class="nav-icon">🔬</span>
+                        <span>Lab Reports</span>
+                    </div>
+                    <div class="nav-item">
+                        <span class="nav-icon">📅</span>
+                        <span>Appointments</span>
+                    </div>
+                    <div class="nav-item">
+                        <span class="nav-icon">🔐</span>
+                        <span>Consent Requests</span>
+                    </div>
+                    <div class="nav-item">
+                        <span class="nav-icon">📊</span>
+                        <span>Health Timeline</span>
+                    </div>
+                    <div class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Settings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div>
+                <!-- Pending Consent Requests -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">⚠️ Pending Consent Requests</h2>
+                    </div>
+
+                    <div class="consent-card">
+                        <div class="consent-header">
+                            <div class="consent-icon">🏥</div>
+                            <div>
+                                <div class="consent-title">Health Record Access Request</div>
+                                <div class="consent-subtitle">Dr. Priya Sharma requested access to your records</div>
+                            </div>
+                        </div>
+
+                        <div class="consent-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Doctor:</span>
+                                <span class="detail-value">Dr. Priya Sharma (MBBS, MD)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Hospital:</span>
+                                <span class="detail-value">Apollo Hospital Mumbai</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Purpose:</span>
+                                <span class="detail-value">Clinical Consultation</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Records Requested:</span>
+                                <span class="detail-value">All records (Jan 2024 - Present)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Access Duration:</span>
+                                <span class="detail-value">1 hour (one-time access)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Data Types:</span>
+                                <span class="detail-value">Prescriptions, Lab Reports, Consultations</span>
+                            </div>
+                        </div>
+
+                        <div class="consent-actions">
+                            <button class="btn btn-approve">✓ Approve Access</button>
+                            <button class="btn btn-deny">✕ Deny</button>
+                        </div>
+                    </div>
+
+                    <div class="consent-card" style="background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); border-color: var(--success);">
+                        <div class="consent-header">
+                            <div class="consent-icon">🌿</div>
+                            <div>
+                                <div class="consent-title">AYUSH Center Access Request</div>
+                                <div class="consent-subtitle">Kottakkal Arya Vaidya Sala requested access</div>
+                            </div>
+                        </div>
+
+                        <div class="consent-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Practitioner:</span>
+                                <span class="detail-value">Dr. Suresh Nair (BAMS)</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Center:</span>
+                                <span class="detail-value">Kottakkal Arya Vaidya Sala</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Purpose:</span>
+                                <span class="detail-value">Panchakarma Treatment Planning</span>
+                            </div>
+                        </div>
+
+                        <div class="consent-actions">
+                            <button class="btn btn-approve">✓ Approve Access</button>
+                            <button class="btn btn-deny">✕ Deny</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Prescriptions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Prescriptions</h2>
+                        <span class="view-all">View All →</span>
+                    </div>
+
+                    <div class="prescription-card">
+                        <div class="rx-header">
+                            <div>
+                                <div class="rx-date">Feb 9, 2026 • 10:30 AM</div>
+                                <div class="rx-doctor">
+                                    <div class="doctor-name">Dr. Priya Sharma</div>
+                                    <div class="doctor-specialty">Internal Medicine • Apollo Hospital</div>
+                                </div>
+                            </div>
+                            <div class="rx-status">Active</div>
+                        </div>
+
+                        <div class="medications">
+                            <div class="med-item">
+                                <div class="med-name">METFORMIN 1000mg</div>
+                                <div class="med-dosage">Twice daily after meals • 30 days</div>
+                            </div>
+                            <div class="med-item">
+                                <div class="med-name">AMLODIPINE 5mg</div>
+                                <div class="med-dosage">Once daily at bedtime • 30 days</div>
+                            </div>
+                            <div class="med-item">
+                                <div class="med-name">Triphala Churna 5g</div>
+                                <div class="med-dosage">Twice daily with warm water • 30 days</div>
+                            </div>
+                        </div>
+
+                        <div class="rx-actions">
+                            <button class="btn-icon">📥 Download PDF</button>
+                            <button class="btn-icon">📱 View QR Code</button>
+                            <button class="btn-icon">🔄 Refill Request</button>
+                        </div>
+                    </div>
+
+                    <div class="prescription-card">
+                        <div class="rx-header">
+                            <div>
+                                <div class="rx-date">Jan 15, 2026</div>
+                                <div class="rx-doctor">
+                                    <div class="doctor-name">Dr. Suresh Nair</div>
+                                    <div class="doctor-specialty">Ayurveda • Kottakkal Arya Vaidya Sala</div>
+                                </div>
+                            </div>
+                            <div class="rx-status" style="background: var(--gray-100); color: var(--gray-600);">Completed</div>
+                        </div>
+
+                        <div class="medications">
+                            <div class="med-item">
+                                <div class="med-name">Ashwagandha Churna 3g</div>
+                                <div class="med-dosage">Twice daily with milk • 15 days</div>
+                            </div>
+                            <div class="med-item">
+                                <div class="med-name">Brahmi Ghrita 10ml</div>
+                                <div class="med-dosage">Once daily before breakfast • 15 days</div>
+                            </div>
+                        </div>
+
+                        <div class="rx-actions">
+                            <button class="btn-icon">📥 Download PDF</button>
+                            <button class="btn-icon">📱 View QR Code</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Appointments -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Upcoming Appointments</h2>
+                        <span class="view-all">Book New →</span>
+                    </div>
+
+                    <div class="appointment-card">
+                        <div class="appointment-time">10:30 AM</div>
+                        <div class="appointment-date">Tomorrow, Feb 10, 2026</div>
+                        <div class="appointment-doctor">
+                            <div class="doctor-avatar">PS</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; margin-bottom: 2px;">Dr. Priya Sharma</div>
+                                <div style="font-size: 13px; color: var(--gray-600);">Follow-up Consultation • Apollo Hospital</div>
+                            </div>
+                            <button class="btn-icon" style="flex: 0;">🗓️ Reschedule</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Timeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Your Health Journey</h2>
+                        <span class="view-all">View Full Timeline →</span>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">Feb 9, 2026</div>
+                                <div class="timeline-title">🩺 Consultation - Internal Medicine</div>
+                                <div class="timeline-facility">Dr. Priya Sharma • Apollo Hospital Mumbai</div>
+                                <div class="timeline-data">
+                                    <div class="data-point">
+                                        <div class="data-label">Blood Pressure</div>
+                                        <div class="data-value">140/90 mmHg</div>
+                                    </div>
+                                    <div class="data-point">
+                                        <div class="data-label">Weight</div>
+                                        <div class="data-value">75 kg</div>
+                                    </div>
+                                    <div class="data-point">
+                                        <div class="data-label">BMI</div>
+                                        <div class="data-value">26.2</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">Jan 15, 2026</div>
+                                <div class="timeline-title">📊 Wearable Data Summary</div>
+                                <div class="timeline-facility">Fitbit Charge 6 • 7-day average</div>
+                                <div class="timeline-data">
+                                    <div class="data-point">
+                                        <div class="data-label">Avg HRV</div>
+                                        <div class="data-value">42 ms</div>
+                                    </div>
+                                    <div class="data-point">
+                                        <div class="data-label">Sleep Quality</div>
+                                        <div class="data-value">78/100</div>
+                                    </div>
+                                    <div class="data-point">
+                                        <div class="data-label">Daily Steps</div>
+                                        <div class="data-value">7,200</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">Dec 15, 2025</div>
+                                <div class="timeline-title">🔬 Laboratory Results</div>
+                                <div class="timeline-facility">Apollo Diagnostics • Mumbai</div>
+                                <div class="timeline-data">
+                                    <div class="data-point">
+                                        <div class="data-label">HbA1c</div>
+                                        <div class="data-value" style="color: var(--error);">7.8%</div>
+                                    </div>
+                                    <div class="data-point">
+                                        <div class="data-label">Fasting Glucose</div>
+                                        <div class="data-value" style="color: var(--error);">142 mg/dL</div>
+                                    </div>
+                                    <div class="data-point">
+                                        <div class="data-label">Total Cholesterol</div>
+                                        <div class="data-value">198 mg/dL</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Simulate consent approval
+        document.querySelectorAll('.btn-approve').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.consent-card');
+                card.style.opacity = '0.5';
+                this.textContent = '✓ Approved';
+                this.disabled = true;
+                setTimeout(() => {
+                    card.style.transform = 'scale(0.95)';
+                    card.style.transition = 'all 0.3s ease';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

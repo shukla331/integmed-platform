@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntegMed - Integrated Healthcare Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Medical Trust Palette */
+            --primary-900: #0A2540;
+            --primary-700: #0F3D5C;
+            --primary-500: #1565C0;
+            --primary-300: #42A5F5;
+            --primary-100: #E3F2FD;
+            
+            /* Clinical Neutrals */
+            --gray-900: #1A1A1A;
+            --gray-700: #424242;
+            --gray-500: #757575;
+            --gray-300: #BDBDBD;
+            --gray-100: #F5F5F5;
+            --gray-50: #FAFAFA;
+            
+            /* Alert Colors */
+            --success: #2E7D32;
+            --warning: #F57C00;
+            --error: #C62828;
+            --info: #0288D1;
+            
+            /* AYUSH Accent */
+            --ayush-primary: #6D4C41;
+            --ayush-light: #EFEBE9;
+            
+            /* Typography */
+            --font-display: 'Crimson Pro', serif;
+            --font-body: 'IBM Plex Sans', sans-serif;
+            
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+            
+            /* Effects */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 24px rgba(0,0,0,0.12);
+            --shadow-xl: 0 24px 48px rgba(0,0,0,0.16);
+            
+            /* Transitions */
+            --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+            --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-300);
+            padding: var(--space-md) var(--space-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-900);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--primary-500);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .search-trigger {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .search-trigger:hover {
+            background: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .kbd {
+            background: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 12px;
+            font-family: monospace;
+            color: var(--gray-700);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--primary-100);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+        }
+
+        .user-menu:hover {
+            background: var(--primary-300);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Main Layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+
+        .page-header {
+            margin-bottom: var(--space-xl);
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary-900);
+            margin-bottom: var(--space-sm);
+            letter-spacing: -1px;
+        }
+
+        .page-subtitle {
+            color: var(--gray-500);
+            font-size: 16px;
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        .tab {
+            padding: var(--space-md) var(--space-lg);
+            background: none;
+            border: none;
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--gray-500);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s var(--ease-smooth);
+        }
+
+        .tab:hover {
+            color: var(--primary-700);
+        }
+
+        .tab.active {
+            color: var(--primary-700);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-500);
+            animation: slideIn 0.3s var(--ease-smooth);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s var(--ease-smooth);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: var(--space-xl);
+        }
+
+        /* Patient Card */
+        .patient-card {
+            background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-900) 100%);
+            border-radius: 16px;
+            padding: var(--space-xl);
+            color: white;
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .patient-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .patient-info h2 {
+            font-family: var(--font-display);
+            font-size: 28px;
+            margin-bottom: var(--space-xs);
+        }
+
+        .patient-meta {
+            opacity: 0.9;
+            font-size: 14px;
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .vitals-quick {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-md);
+            position: relative;
+            z-index: 1;
+        }
+
+        .vital-item {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: var(--space-md);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .vital-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .vital-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .vital-unit {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-left: 4px;
+        }
+
+        /* Health Graph */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-900);
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .chip {
+            padding: 6px 14px;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+        }
+
+        .chip:hover {
+            background: var(--gray-300);
+        }
+
+        .chip.active {
+            background: var(--primary-500);
+            color: white;
+            border-color: var(--primary-500);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: var(--space-xl);
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary-300), var(--gray-300));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -28px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary-500);
+            box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.1);
+        }
+
+        .timeline-marker.ayush {
+            border-color: var(--ayush-primary);
+            box-shadow: 0 0 0 4px rgba(109, 76, 65, 0.1);
+        }
+
+        .timeline-date {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: var(--space-xs);
+            font-weight: 500;
+        }
+
+        .timeline-content {
+            background: var(--gray-50);
+            padding: var(--space-md);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-300);
+        }
+
+        .timeline-content.ayush {
+            background: var(--ayush-light);
+            border-left-color: var(--ayush-primary);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--space-xs);
+        }
+
+        .timeline-facility {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: var(--space-sm);
+        }
+
+        .timeline-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-md);
+        }
+
+        .data-point {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .data-label {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .data-value {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .data-value.high {
+            color: var(--error);
+        }
+
+        .data-value.normal {
+            color: var(--success);
+        }
+
+        /* AI Scribe Interface */
+        .scribe-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+        }
+
+        .audio-visual {
+            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
+            border-radius: 12px;
+            padding: var(--space-xl);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            height: 100px;
+            margin-bottom: var(--space-xl);
+        }
+
+        .bar {
+            width: 4px;
+            background: var(--primary-300);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0s; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        .bar:nth-child(6) { animation-delay: 0.3s; }
+        .bar:nth-child(7) { animation-delay: 0.2s; }
+        .bar:nth-child(8) { animation-delay: 0.1s; }
+
+        @keyframes pulse {
+            0%, 100% { height: 20px; }
+            50% { height: 60px; }
+        }
+
+        .recording-status {
+            font-size: 18px;
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: #FF4444;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .transcript-live {
+            background: rgba(255,255,255,0.1);
+            padding: var(--space-lg);
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .soap-output {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .soap-section {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .soap-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .soap-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-500);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+
+        .soap-content {
+            color: var(--gray-700);
+            line-height: 1.8;
+        }
+
+        .entity-tag {
+            display: inline-block;
+            background: var(--primary-100);
+            color: var(--primary-700);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin: 0 2px;
+            font-weight: 500;
+        }
+
+        /* Prescription Interface */
+        .prescription-editor {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-xl);
+        }
+
+        .rx-input {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .shorthand-input {
+            width: 100%;
+            padding: var(--space-md);
+            font-family: monospace;
+            font-size: 16px;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            margin-bottom: var(--space-lg);
+            transition: all 0.2s var(--ease-smooth);
+        }
+
+        .shorthand-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+        }
+
+        .suggestion-hint {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: var(--space-lg);
+            font-style: italic;
+        }
+
+        .medication-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .medication-item {
+            background: var(--gray-50);
+            padding: var(--space-lg);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-500);
+            position: relative;
+        }
+
+        .medication-item.ayush {
+            border-left-color: var(--ayush-primary);
+        }
+
+        .med-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-sm);
+        }
+
+        .med-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--gray-900);
+        }
+
+        .med-generic {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary-700);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .med-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--gray-400);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .remove-btn:hover {
+            color: var(--error);
+        }
+
+        /* Safety HUD */
+        .safety-panel {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .safety-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .safety-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alert-item {
+            background: var(--warning);
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            padding: var(--space-md);
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+            margin-bottom: var(--space-md);
+        }
+
+        .alert-item.critical {
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border-left-color: var(--error);
+        }
+
+        .alert-severity {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: var(--space-xs);
+        }
+
+        .alert-item.critical .alert-severity {
+            color: var(--error);
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            color: var(--gray-900);
+        }
+
+        .alert-desc {
+            font-size: 13px;
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        .compliance-checks {
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) 0;
+            font-size: 14px;
+        }
+
+        .check-icon {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Command Palette */
+        .command-palette-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            animation: fadeIn 0.2s var(--ease-smooth);
+        }
+
+        .command-palette-overlay.active {
+            display: flex;
+            align-items: start;
+            justify-content: center;
+            padding-top: 120px;
+        }
+
+        .command-palette {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            width: 600px;
+            max-height: 500px;
+            overflow: hidden;
+            animation: slideDown 0.3s var(--ease-bounce);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .command-input-wrapper {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .command-input {
+            width: 100%;
+            border: none;
+            font-size: 18px;
+            font-family: var(--font-body);
+            padding: var(--space-sm);
+            color: var(--gray-900);
+        }
+
+        .command-input:focus {
+            outline: none;
+        }
+
+        .command-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .command-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .command-section {
+            padding: var(--space-md);
+        }
+
+        .command-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-500);
+            margin-bottom: var(--space-sm);
+            padding: 0 var(--space-sm);
+        }
+
+        .command-item {
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s var(--ease-smooth);
+        }
+
+        .command-item:hover,
+        .command-item.selected {
+            background: var(--primary-100);
+        }
+
+        .command-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-100);
+            border-radius: 6px;
+            font-size: 18px;
+        }
+
+        .command-content {
+            flex: 1;
+        }
+
+        .command-title {
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .command-subtitle {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .command-shortcut {
+            font-size: 12px;
+            color: var(--gray-400);
+            font-family: monospace;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+
+        .btn {
+            padding: var(--space-md) var(--space-lg);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .btn-primary {
+            background: var(--primary-500);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-700);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+        }
+
+        /* Sidebar */
+        .sidebar-panel {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 100px;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .quick-action-btn {
+            width: 100%;
+            padding: var(--space-md);
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .quick-action-btn:hover {
+            background: white;
+            border-color: var(--primary-500);
+            color: var(--primary-700);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scribe-container,
+            .prescription-editor {
+                grid-template-columns: 1fr;
+            }
+
+            .command-palette {
+                width: 90%;
+                max-width: 600px;
+            }
+        }
+
+        /* Loading States */
+        .loading-shimmer {
+            background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-200) 50%, var(--gray-100) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">Integ<span>Med</span></div>
+        <div class="header-actions">
+            <div class="search-trigger" onclick="toggleCommandPalette()">
+                <span>Search or command...</span>
+                <span class="kbd">⌘K</span>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">PS</div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 500;">Dr. Priya Sharma</div>
+                    <div style="font-size: 12px; color: var(--gray-500);">MBBS, MD</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Clinical Dashboard</h1>
+            <p class="page-subtitle">Integrated patient care across Allopathy and AYUSH systems</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab" onclick="switchTab('scribe')">AI Scribe</button>
+            <button class="tab" onclick="switchTab('prescription')">Prescription</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <!-- Patient Card -->
+            <div class="patient-card">
+                <div class="patient-header">
+                    <div class="patient-info">
+                        <h2>Rajesh Kumar</h2>
+                        <div class="patient-meta">
+                            <span>M/41 years</span>
+                            <span>•</span>
+                            <span>ABHA: rajesh.kumar@abdm</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="badge">🩺 Type 2 Diabetes</span>
+                        <span class="badge">💊 Hypertension</span>
+                    </div>
+                </div>
+                <div class="vitals-quick">
+                    <div class="vital-item">
+                        <div class="vital-label">Blood Pressure</div>
+                        <div class="vital-value">140<span class="vital-unit">/90</span></div>
+                    </div>
+                    <div class="vital-item">
+                        <div class="vital-label">Heart Rate</div>
+                        <div class="vital-value">78<span class="vital-unit">bpm</span></div>
+                    </div>
+                    <div class="vital-item">
+                        <div class="vital-label">HbA1c</div>
+                        <div class="vital-value">7.8<span class="vital-unit">%</span></div>
+                    </div>
+                    <div class="vital-item">
+                        <div class="vital-label">BMI</div>
+                        <div class="vital-value">26.2<span class="vital-unit">kg/m²</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div>
+                    <!-- Health Graph / Timeline -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Integrated Health Timeline</h3>
+                            <div class="filter-chips">
+                                <button class="chip active">All</button>
+                                <button class="chip">Allopathy</button>
+                                <button class="chip">AYUSH</button>
+                                <button class="chip">Wearables</button>
+                            </div>
+                        </div>
+
+                        <div class="timeline">
+                            <!-- Wearable Data -->
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-date">Jan 15, 2026</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">📊 Wearable Data (Last 7 days)</div>
+                                    <div class="timeline-facility">Fitbit Charge 6</div>
+                                    <div class="timeline-data">
+                                        <div class="data-point">
+                                            <span class="data-label">Avg HRV</span>
+                                            <span class="data-value">42 ms</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Sleep Quality</span>
+                                            <span class="data-value">78/100</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Daily Steps</span>
+                                            <span class="data-value">7,200</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Allopathic Lab Result -->
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-date">Dec 15, 2025</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">🔬 Laboratory Results</div>
+                                    <div class="timeline-facility">Apollo Hospital Mumbai</div>
+                                    <div class="timeline-data">
+                                        <div class="data-point">
+                                            <span class="data-label">HbA1c</span>
+                                            <span class="data-value high">7.8%</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Fasting Glucose</span>
+                                            <span class="data-value high">142 mg/dL</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Total Cholesterol</span>
+                                            <span class="data-value">198 mg/dL</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- AYUSH Assessment -->
+                            <div class="timeline-item">
+                                <div class="timeline-marker ayush"></div>
+                                <div class="timeline-date">Nov 10, 2025</div>
+                                <div class="timeline-content ayush">
+                                    <div class="timeline-title">🌿 Ayurvedic Assessment & Panchakarma</div>
+                                    <div class="timeline-facility">Kottakkal Arya Vaidya Sala</div>
+                                    <div class="timeline-data">
+                                        <div class="data-point">
+                                            <span class="data-label">Prakriti</span>
+                                            <span class="data-value">Vata-Pitta</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Nadi (Pulse)</span>
+                                            <span class="data-value">Heavy, Slippery</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Treatment</span>
+                                            <span class="data-value">Virechana (7 days)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Previous Visit -->
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-date">Oct 5, 2025</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">🏥 OPD Consultation</div>
+                                    <div class="timeline-facility">Lilavati Hospital</div>
+                                    <div class="timeline-data">
+                                        <div class="data-point">
+                                            <span class="data-label">Complaint</span>
+                                            <span class="data-value">Fatigue, Polyuria</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Diagnosis</span>
+                                            <span class="data-value">T2DM - New onset</span>
+                                        </div>
+                                        <div class="data-point">
+                                            <span class="data-label">Treatment</span>
+                                            <span class="data-value">Started Metformin</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div>
+                    <div class="sidebar-panel">
+                        <h3 class="card-title" style="margin-bottom: var(--space-lg);">Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="quick-action-btn" onclick="switchTab('scribe')">
+                                🎙️ Start AI Scribe
+                            </button>
+                            <button class="quick-action-btn" onclick="switchTab('prescription')">
+                                📝 Write Prescription
+                            </button>
+                            <button class="quick-action-btn">
+                                📋 Order Lab Tests
+                            </button>
+                            <button class="quick-action-btn">
+                                📄 View Past Records
+                            </button>
+                            <button class="quick-action-btn">
+                                🔗 Request ABDM Consent
+                            </button>
+                            <button class="quick-action-btn">
+                                📧 Send to Health Locker
+                            </button>
+                        </div>
+
+                        <div style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--gray-200);">
+                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: var(--space-md);">Recent Alerts</h4>
+                            <div style="background: var(--warning); background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%); padding: var(--space-sm); border-radius: 6px; font-size: 13px; border-left: 3px solid var(--warning);">
+                                ⚠️ HbA1c trending upward
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Scribe Tab -->
+        <div id="scribe" class="tab-content">
+            <div class="scribe-container">
+                <!-- Audio Visualization -->
+                <div class="audio-visual">
+                    <div class="waveform">
+                        <div class="bar" style="height: 30px;"></div>
+                        <div class="bar" style="height: 50px;"></div>
+                        <div class="bar" style="height: 40px;"></div>
+                        <div class="bar" style="height: 60px;"></div>
+                        <div class="bar" style="height: 35px;"></div>
+                        <div class="bar" style="height: 55px;"></div>
+                        <div class="bar" style="height: 45px;"></div>
+                        <div class="bar" style="height: 25px;"></div>
+                    </div>
+                    
+                    <div class="recording-status">
+                        <div class="recording-dot"></div>
+                        <span>Recording in progress...</span>
+                    </div>
+
+                    <div class="transcript-live">
+                        "Patient complains of persistent fatigue for the past two weeks. No fever, cough, or weight loss reported. Patient mentions increased thirst and frequent urination..."
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary">⏸️ Pause</button>
+                        <button class="btn btn-primary">⏹️ Stop & Generate</button>
+                    </div>
+                </div>
+
+                <!-- SOAP Note Output -->
+                <div class="soap-output">
+                    <h3 class="card-title" style="margin-bottom: var(--space-xl);">Auto-Generated SOAP Note</h3>
+
+                    <div class="soap-section">
+                        <div class="soap-label">Subjective</div>
+                        <div class="soap-content">
+                            Patient complains of <span class="entity-tag">persistent fatigue</span> for the past two weeks. No fever, cough, or weight loss. Reports <span class="entity-tag">increased thirst</span> and <span class="entity-tag">frequent urination</span>. Patient has been monitoring blood glucose at home with readings ranging from 140-160 mg/dL fasting.
+                        </div>
+                    </div>
+
+                    <div class="soap-section">
+                        <div class="soap-label">Objective</div>
+                        <div class="soap-content">
+                            <strong>Vitals:</strong> BP 140/90 mmHg, Pulse 78/min, Temp 98.6°F, Weight 75 kg, BMI 26.2<br>
+                            <strong>Examination:</strong> Patient appears tired. No pallor or icterus. Cardiovascular and respiratory examination unremarkable.<br>
+                            <strong>Labs (Dec 15, 2025):</strong> <span class="entity-tag">HbA1c: 7.8%</span> (High), Fasting glucose: 142 mg/dL
+                        </div>
+                    </div>
+
+                    <div class="soap-section">
+                        <div class="soap-label">Assessment</div>
+                        <div class="soap-content">
+                            <strong>Primary:</strong> <span class="entity-tag">Type 2 Diabetes Mellitus</span> - poorly controlled (ICD-10: E11.65)<br>
+                            <strong>Secondary:</strong> <span class="entity-tag">Hypertension Stage 1</span> (ICD-10: I10)
+                        </div>
+                    </div>
+
+                    <div class="soap-section">
+                        <div class="soap-label">Plan</div>
+                        <div class="soap-content">
+                            1. Increase Metformin dose to 1000mg BD<br>
+                            2. Start Amlodipine 5mg OD for BP control<br>
+                            3. Order: Fasting blood sugar, Lipid profile<br>
+                            4. Lifestyle: Advised dietary modifications (low glycemic index diet) and regular exercise (30 min walking daily)<br>
+                            5. Follow-up: 2 weeks
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary">✏️ Edit Note</button>
+                        <button class="btn btn-primary" onclick="switchTab('prescription')">📝 Create Prescription</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prescription Tab -->
+        <div id="prescription" class="tab-content">
+            <div class="prescription-editor">
+                <!-- Prescription Input -->
+                <div>
+                    <div class="rx-input">
+                        <h3 class="card-title" style="margin-bottom: var(--space-lg);">Write Prescription</h3>
+                        
+                        <input 
+                            type="text" 
+                            class="shorthand-input" 
+                            placeholder="Type shorthand (e.g., Metf 1000 bd 30d)"
+                            onkeypress="handleShorthand(event)"
+                        />
+                        <div class="suggestion-hint">💡 Try: "Metf 1000 bd 30d" or "Amlo 5 od hs 30d"</div>
+
+                        <div class="medication-list">
+                            <div class="medication-item">
+                                <div class="med-header">
+                                    <div>
+                                        <div class="med-generic">METFORMIN</div>
+                                        <div class="med-name">Suggested: Glycomet 1000mg</div>
+                                    </div>
+                                    <button class="remove-btn">✕</button>
+                                </div>
+                                <div class="med-details">
+                                    <div><strong>Strength:</strong> 1000mg</div>
+                                    <div><strong>Frequency:</strong> BD (Twice daily)</div>
+                                    <div><strong>Duration:</strong> 30 days</div>
+                                    <div><strong>Route:</strong> Oral</div>
+                                    <div><strong>Quantity:</strong> 60 tablets</div>
+                                    <div><strong>Instructions:</strong> After meals</div>
+                                </div>
+                            </div>
+
+                            <div class="medication-item">
+                                <div class="med-header">
+                                    <div>
+                                        <div class="med-generic">AMLODIPINE</div>
+                                        <div class="med-name">Suggested: Amlodac 5mg</div>
+                                    </div>
+                                    <button class="remove-btn">✕</button>
+                                </div>
+                                <div class="med-details">
+                                    <div><strong>Strength:</strong> 5mg</div>
+                                    <div><strong>Frequency:</strong> OD (Once daily)</div>
+                                    <div><strong>Duration:</strong> 30 days</div>
+                                    <div><strong>Route:</strong> Oral</div>
+                                    <div><strong>Quantity:</strong> 30 tablets</div>
+                                    <div><strong>Instructions:</strong> At bedtime</div>
+                                </div>
+                            </div>
+
+                            <div class="medication-item ayush">
+                                <div class="med-header">
+                                    <div>
+                                        <div class="med-generic" style="color: var(--ayush-primary);">AYURVEDIC</div>
+                                        <div class="med-name">Triphala Churna</div>
+                                    </div>
+                                    <button class="remove-btn">✕</button>
+                                </div>
+                                <div class="med-details">
+                                    <div><strong>Dose:</strong> 5g</div>
+                                    <div><strong>Frequency:</strong> BD (Twice daily)</div>
+                                    <div><strong>Duration:</strong> 30 days</div>
+                                    <div><strong>Anupana:</strong> Warm water</div>
+                                    <div><strong>Time:</strong> Before meals</div>
+                                    <div><strong>Type:</strong> Churna (Powder)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary">💾 Save as Draft</button>
+                            <button class="btn btn-primary">✍️ Sign & Generate Rx</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Safety Panel -->
+                <div>
+                    <div class="safety-panel">
+                        <div class="safety-header">
+                            <div class="safety-icon">🛡️</div>
+                            <h3 class="card-title">Safety HUD</h3>
+                        </div>
+
+                        <div class="alert-item">
+                            <div class="alert-severity">Moderate</div>
+                            <div class="alert-title">Herb-Drug Interaction Detected</div>
+                            <div class="alert-desc">
+                                Triphala may enhance hypoglycemic effects of Metformin. Monitor blood glucose levels closely. Consider adjusting doses if necessary.
+                            </div>
+                        </div>
+
+                        <div class="compliance-checks">
+                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: var(--space-md);">NMC Compliance</h4>
+                            <div class="check-item">
+                                <span class="check-icon">✓</span>
+                                <span>Generic names in CAPITALS</span>
+                            </div>
+                            <div class="check-item">
+                                <span class="check-icon">✓</span>
+                                <span>Generic-first prescription</span>
+                            </div>
+                            <div class="check-item">
+                                <span class="check-icon">✓</span>
+                                <span>No Schedule X drugs for AYUSH doctor</span>
+                            </div>
+                            <div class="check-item">
+                                <span class="check-icon">✓</span>
+                                <span>Doctor credentials verified</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--space-lg); padding: var(--space-md); background: var(--success); background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%); border-radius: 8px; border-left: 4px solid var(--success);">
+                            <div style="font-weight: 600; margin-bottom: 4px;">✓ Ready to Sign</div>
+                            <div style="font-size: 13px; color: var(--gray-700);">All safety checks passed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="command-palette-overlay" id="commandPalette" onclick="closeCommandPalette(event)">
+        <div class="command-palette" onclick="event.stopPropagation()">
+            <div class="command-input-wrapper">
+                <input 
+                    type="text" 
+                    class="command-input" 
+                    placeholder="Search patients, actions, or jump to..."
+                    id="commandInput"
+                    onkeyup="filterCommands(event)"
+                />
+            </div>
+            <div class="command-results">
+                <div class="command-section">
+                    <div class="command-section-title">Quick Actions</div>
+                    <div class="command-item selected">
+                        <div class="command-icon">🎙️</div>
+                        <div class="command-content">
+                            <div class="command-title">Start AI Scribe</div>
+                            <div class="command-subtitle">Begin ambient documentation</div>
+                        </div>
+                        <div class="command-shortcut">⌘S</div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-icon">📝</div>
+                        <div class="command-content">
+                            <div class="command-title">New Prescription</div>
+                            <div class="command-subtitle">Write prescription with shorthand</div>
+                        </div>
+                        <div class="command-shortcut">⌘P</div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-icon">🔗</div>
+                        <div class="command-content">
+                            <div class="command-title">Request ABDM Consent</div>
+                            <div class="command-subtitle">Fetch patient health records</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-section">
+                    <div class="command-section-title">Recent Patients</div>
+                    <div class="command-item">
+                        <div class="command-icon">👤</div>
+                        <div class="command-content">
+                            <div class="command-title">Rajesh Kumar</div>
+                            <div class="command-subtitle">M/41 • Type 2 DM, HTN</div>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-icon">👤</div>
+                        <div class="command-content">
+                            <div class="command-title">Priya Mehta</div>
+                            <div class="command-subtitle">F/35 • Thyroid disorder</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-section">
+                    <div class="command-section-title">Navigation</div>
+                    <div class="command-item">
+                        <div class="command-icon">📊</div>
+                        <div class="command-content">
+                            <div class="command-title">Dashboard</div>
+                            <div class="command-subtitle">View patient timeline</div>
+                        </div>
+                    </div>
+                    <div class="command-item">
+                        <div class="command-icon">📋</div>
+                        <div class="command-content">
+                            <div class="command-title">Lab Orders</div>
+                            <div class="command-subtitle">Order investigations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Command Palette
+        function toggleCommandPalette() {
+            const palette = document.getElementById('commandPalette');
+            palette.classList.toggle('active');
+            if (palette.classList.contains('active')) {
+                document.getElementById('commandInput').focus();
+            }
+        }
+
+        function closeCommandPalette(event) {
+            if (event.target.id === 'commandPalette') {
+                document.getElementById('commandPalette').classList.remove('active');
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Command/Ctrl + K for command palette
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                toggleCommandPalette();
+            }
+            // Escape to close
+            if (e.key === 'Escape') {
+                document.getElementById('commandPalette').classList.remove('active');
+            }
+        });
+
+        // Shorthand expansion simulation
+        function handleShorthand(e) {
+            if (e.key === 'Enter') {
+                const input = e.target.value;
+                // This would normally call an API to expand the shorthand
+                console.log('Expanding shorthand:', input);
+                e.target.value = '';
+                
+                // Show a success animation or add to medication list
+                alert('In production, this would expand: ' + input + '\nExample: "Metf 1000 bd 30d" → METFORMIN 1000mg BD for 30 days');
+            }
+        }
+
+        // Filter command palette
+        function filterCommands(e) {
+            const query = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.command-item');
+            
+            items.forEach(item => {
+                const title = item.querySelector('.command-title').textContent.toLowerCase();
+                const subtitle = item.querySelector('.command-subtitle')?.textContent.toLowerCase() || '';
+                
+                if (title.includes(query) || subtitle.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Auto-refresh waveform animation
+        setInterval(() => {
+            document.querySelectorAll('.bar').forEach(bar => {
+                const randomHeight = Math.random() * 50 + 20;
+                bar.style.height = randomHeight + 'px';
+            });
+        }, 200);
+    </script>
+</body>
+</html>
