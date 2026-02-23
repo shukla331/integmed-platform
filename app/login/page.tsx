@@ -174,20 +174,45 @@ export default function LoginPage() {
         )}
 
         {/* Footer */}
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Powered by ABDM • HPR Authenticated</p>
-          <p className="mt-2">
-            Don't have HPR ID?{' '}
-            <a
-              href="https://hprid.abdm.gov.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary-500 hover:text-primary-700"
-            >
-              Register here
-            </a>
-          </p>
+        <div className="mt-6 pt-4 border-t border-gray-100 text-center text-xs text-gray-400">
+          <p>🏥 IntegMed • Demo Environment</p>
+          <p className="mt-1">Real HPR integration pending government approval</p>
         </div>
+
+        {/* ====== TEMPORARY: SKIP LOGIN BUTTON ====== */}
+        {/* DELETE THIS ENTIRE SECTION WHEN REAL AUTH IS READY */}
+        <button
+          onClick={() => {
+            // Auto-login as demo doctor
+            const demoUser = {
+              id: "demo-doctor-001",
+              name: "Dr. Priya Sharma",
+              mobile: "+919876543210",
+              email: "priya.sharma@integmed.health",
+              system: "allopathy",
+              qualification: "MBBS, MD (Internal Medicine)",
+              specialization: "Internal Medicine",
+              role: "doctor",
+            };
+            
+            // Store fake token
+            Cookies.set('access_token', 'demo-token-12345', { expires: 7 });
+            Cookies.set('user', JSON.stringify(demoUser), { expires: 7 });
+            
+            // Update state
+            setUser(demoUser);
+            
+            // Go to dashboard
+            router.push('/dashboard');
+          }}
+          className="mt-6 w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 animate-pulse"
+        >
+          🚀 SKIP LOGIN - GO TO DASHBOARD
+        </button>
+        <p className="text-center text-xs text-gray-400 mt-2">
+          (For demo/testing only - bypasses authentication)
+        </p>
+        {/* ====== END TEMPORARY SECTION ====== */}
       </div>
     </div>
   );
