@@ -135,10 +135,10 @@ export default function AIScribePage() {
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
                 <strong>How to use:</strong>
                 <ul className="mt-2 space-y-1">
-                  <li>• Speak naturally during consultation</li>
-                  <li>• Transcript appears live</li>
-                  <li>• SOAP note auto-generates after stop</li>
-                  <li>• Review before saving</li>
+                  <li>â€¢ Speak naturally during consultation</li>
+                  <li>â€¢ Transcript appears live</li>
+                  <li>â€¢ SOAP note auto-generates after stop</li>
+                  <li>â€¢ Review before saving</li>
                 </ul>
               </div>
             </div>

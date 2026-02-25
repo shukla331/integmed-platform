@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'IntegMed - Integrated Healthcare Platform',
   description: 'Bridging Allopathy and AYUSH for comprehensive patient care',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntegMed - Clinic Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Crimson+Pro:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-900: #0A2540;
+            --primary-700: #0F3D5C;
+            --primary-500: #1565C0;
+            --primary-300: #42A5F5;
+            --primary-100: #E3F2FD;
+            
+            --gray-900: #1A1A1A;
+            --gray-700: #424242;
+            --gray-500: #757575;
+            --gray-300: #BDBDBD;
+            --gray-100: #F5F5F5;
+            --gray-50: #FAFAFA;
+            
+            --success: #2E7D32;
+            --warning: #F57C00;
+            --error: #C62828;
+            --info: #0288D1;
+            
+            --font-display: 'Crimson Pro', serif;
+            --font-body: 'IBM Plex Sans', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 24px rgba(0,0,0,0.12);
+            
+            --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: #F8F9FA;
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 260px;
+            background: var(--primary-900);
+            color: white;
+            padding: var(--space-xl) 0;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 700;
+            padding: 0 var(--space-xl);
+            margin-bottom: var(--space-xl);
+        }
+
+        .logo span {
+            color: var(--primary-300);
+        }
+
+        .nav-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            padding: 0 var(--space-xl);
+            margin-bottom: var(--space-md);
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-xl);
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            color: rgba(255,255,255,0.8);
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(66, 165, 245, 0.2);
+            border-left: 3px solid var(--primary-300);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: var(--space-xl);
+        }
+
+        .header {
+            background: white;
+            padding: var(--space-lg) var(--space-xl);
+            border-radius: 12px;
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-900);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .date-range {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .stat-card {
+            background: white;
+            padding: var(--space-lg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-md);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-100);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 4px 8px;
+            background: #E8F5E9;
+            color: var(--success);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-trend.down {
+            background: #FFEBEE;
+            color: var(--error);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .stat-subtext {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: var(--space-xs);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary-900);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: var(--space-sm);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+        }
+
+        .btn-sm:hover {
+            background: var(--gray-300);
+        }
+
+        .btn-primary {
+            background: var(--primary-500);
+            color: white;
+            border-color: var(--primary-500);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-700);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--gray-50);
+        }
+
+        th {
+            text-align: left;
+            padding: var(--space-md);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        td {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #E8F5E9;
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: #FFF3E0;
+            color: var(--warning);
+        }
+
+        .status-error {
+            background: #FFEBEE;
+            color: var(--error);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: var(--space-sm);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+            border-radius: 4px;
+            transition: width 0.3s var(--ease-smooth);
+        }
+
+        /* ABDM Monitor */
+        .abdm-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .abdm-metric {
+            padding: var(--space-md);
+            background: var(--gray-50);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-500);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: var(--space-xs);
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .metric-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-left: 4px;
+        }
+
+        /* System Health */
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+        }
+
+        .health-item {
+            padding: var(--space-lg);
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .health-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .health-name {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .health-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .health-status.warning {
+            background: var(--warning);
+        }
+
+        .health-status.error {
+            background: var(--error);
+        }
+
+        .health-metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-sm);
+            font-size: 14px;
+        }
+
+        /* Chart Placeholder */
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-50) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+            font-size: 14px;
+            border: 2px dashed var(--gray-300);
+        }
+
+        /* Activity Log */
+        .activity-item {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-family: var(--font-mono);
+            min-width: 100px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-user {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .activity-action {
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+
+        /* Doctor Card */
+        .doctor-card {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--gray-50);
+            border-radius: 8px;
+            margin-bottom: var(--space-md);
+        }
+
+        .doctor-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .doctor-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .doctor-specialty {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .doctor-stats {
+            display: flex;
+            gap: var(--space-lg);
+            font-size: 13px;
+            margin-top: var(--space-xs);
+        }
+
+        .doctor-stat {
+            color: var(--gray-600);
+        }
+
+        .doctor-stat strong {
+            color: var(--gray-900);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar .nav-label,
+            .sidebar .logo {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .health-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">Integ<span>Med</span></div>
+        
+        <div class="nav-section">
+            <div class="nav-label">Overview</div>
+            <div class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">Management</div>
+            <div class="nav-item">
+                <span class="nav-icon">👨‍⚕️</span>
+                <span>Doctors & Staff</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Patients</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📅</span>
+                <span>Appointments</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">💊</span>
+                <span>Prescriptions</span>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-label">System</div>
+            <div class="nav-item">
+                <span class="nav-icon">🔗</span>
+                <span>ABDM Monitor</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📄</span>
+                <span>Documents</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🛡️</span>
+                <span>Compliance</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>Settings</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <div class="page-title">Clinic Dashboard</div>
+                <div style="font-size: 14px; color: var(--gray-500);">Apollo Hospital Mumbai • Admin View</div>
+            </div>
+            <div class="header-actions">
+                <div class="date-range">
+                    📅 Last 7 days
+                </div>
+                <div class="admin-avatar">AH</div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-trend">↑ 12%</div>
+                </div>
+                <div class="stat-label">Total Patients</div>
+                <div class="stat-value">1,247</div>
+                <div class="stat-subtext">+134 this week</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-trend">↑ 8%</div>
+                </div>
+                <div class="stat-label">Consultations</div>
+                <div class="stat-value">342</div>
+                <div class="stat-subtext">This week</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">💊</div>
+                    <div class="stat-trend">↑ 15%</div>
+                </div>
+                <div class="stat-label">Prescriptions</div>
+                <div class="stat-value">298</div>
+                <div class="stat-subtext">89% digital signed</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-trend down">↓ 3%</div>
+                </div>
+                <div class="stat-label">Revenue</div>
+                <div class="stat-value">₹4.2L</div>
+                <div class="stat-subtext">This week</div>
+            </div>
+        </div>
+
+        <!-- ABDM Integration Monitor -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🔗 ABDM Integration Status</h2>
+                <div class="card-actions">
+                    <button class="btn-sm">View Logs</button>
+                    <button class="btn-sm btn-primary">Test Connection</button>
+                </div>
+            </div>
+
+            <div class="abdm-status">
+                <div class="abdm-metric">
+                    <div class="metric-label">Consent Requests</div>
+                    <div class="metric-value">156<span class="metric-unit">total</span></div>
+                </div>
+                <div class="abdm-metric">
+                    <div class="metric-label">Approved</div>
+                    <div class="metric-value">142<span class="metric-unit">(91%)</span></div>
+                </div>
+                <div class="abdm-metric">
+                    <div class="metric-label">Data Fetches</div>
+                    <div class="metric-value">128<span class="metric-unit">successful</span></div>
+                </div>
+                <div class="abdm-metric">
+                    <div class="metric-label">Avg Response Time</div>
+                    <div class="metric-value">1.2<span class="metric-unit">sec</span></div>
+                </div>
+                <div class="abdm-metric">
+                    <div class="metric-label">API Success Rate</div>
+                    <div class="metric-value">99.2<span class="metric-unit">%</span></div>
+                </div>
+                <div class="abdm-metric" style="border-left-color: var(--warning);">
+                    <div class="metric-label">Failed Requests</div>
+                    <div class="metric-value" style="color: var(--warning);">3<span class="metric-unit">errors</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Health -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">⚡ System Health</h2>
+                <div class="card-actions">
+                    <button class="btn-sm">Full Report</button>
+                </div>
+            </div>
+
+            <div class="health-grid">
+                <div class="health-item">
+                    <div class="health-header">
+                        <span class="health-name">API Server</span>
+                        <span class="health-status"></span>
+                    </div>
+                    <div class="health-metric">
+                        <span>Uptime</span>
+                        <strong>99.98%</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Response Time</span>
+                        <strong>142ms</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Requests/min</span>
+                        <strong>1,247</strong>
+                    </div>
+                </div>
+
+                <div class="health-item">
+                    <div class="health-header">
+                        <span class="health-name">Database</span>
+                        <span class="health-status"></span>
+                    </div>
+                    <div class="health-metric">
+                        <span>Connection Pool</span>
+                        <strong>45/100</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Query Time (avg)</span>
+                        <strong>12ms</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Storage Used</span>
+                        <strong>342GB / 1TB</strong>
+                    </div>
+                </div>
+
+                <div class="health-item">
+                    <div class="health-header">
+                        <span class="health-name">AI Scribe Service</span>
+                        <span class="health-status warning"></span>
+                    </div>
+                    <div class="health-metric">
+                        <span>GPU Utilization</span>
+                        <strong>78%</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Processing Queue</span>
+                        <strong>12 pending</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Accuracy</span>
+                        <strong>94.2%</strong>
+                    </div>
+                </div>
+
+                <div class="health-item">
+                    <div class="health-header">
+                        <span class="health-name">Document OCR</span>
+                        <span class="health-status"></span>
+                    </div>
+                    <div class="health-metric">
+                        <span>Documents Processed</span>
+                        <strong>1,456 today</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Success Rate</span>
+                        <strong>96.8%</strong>
+                    </div>
+                    <div class="health-metric">
+                        <span>Avg Processing</span>
+                        <strong>4.2 sec</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Doctors -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">👨‍⚕️ Active Doctors</h2>
+                <div class="card-actions">
+                    <button class="btn-sm">Add New</button>
+                    <button class="btn-sm">Manage All</button>
+                </div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doctor-avatar">PS</div>
+                <div class="doctor-info">
+                    <div class="doctor-name">Dr. Priya Sharma</div>
+                    <div class="doctor-specialty">MBBS, MD • Internal Medicine</div>
+                    <div class="doctor-stats">
+                        <span class="doctor-stat"><strong>48</strong> patients this week</span>
+                        <span class="doctor-stat"><strong>42</strong> prescriptions</span>
+                        <span class="doctor-stat"><strong>4.8</strong> rating</span>
+                    </div>
+                </div>
+                <div class="status-badge status-active">Active</div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doctor-avatar">SN</div>
+                <div class="doctor-info">
+                    <div class="doctor-name">Dr. Suresh Nair</div>
+                    <div class="doctor-specialty">BAMS • Ayurveda Specialist</div>
+                    <div class="doctor-stats">
+                        <span class="doctor-stat"><strong>32</strong> patients this week</span>
+                        <span class="doctor-stat"><strong>28</strong> prescriptions</span>
+                        <span class="doctor-stat"><strong>4.9</strong> rating</span>
+                    </div>
+                </div>
+                <div class="status-badge status-active">Active</div>
+            </div>
+
+            <div class="doctor-card">
+                <div class="doctor-avatar">RK</div>
+                <div class="doctor-info">
+                    <div class="doctor-name">Dr. Rahul Kapoor</div>
+                    <div class="doctor-specialty">MBBS, MS • General Surgery</div>
+                    <div class="doctor-stats">
+                        <span class="doctor-stat"><strong>24</strong> patients this week</span>
+                        <span class="doctor-stat"><strong>18</strong> prescriptions</span>
+                        <span class="doctor-stat"><strong>4.7</strong> rating</span>
+                    </div>
+                </div>
+                <div class="status-badge status-active">Active</div>
+            </div>
+        </div>
+
+        <!-- Document Processing Queue -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">📄 Bulk Document Processing</h2>
+                <div class="card-actions">
+                    <button class="btn-sm btn-primary">Upload Batch</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Patient</th>
+                            <th>Files</th>
+                            <th>Progress</th>
+                            <th>Status</th>
+                            <th>Started</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span style="font-family: var(--font-mono); font-size: 13px;">#BAT-001</span></td>
+                            <td>Rajesh Kumar</td>
+                            <td>15 files</td>
+                            <td>
+                                <div style="width: 100px;">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-active">Completed</span></td>
+                            <td>2 hours ago</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-family: var(--font-mono); font-size: 13px;">#BAT-002</span></td>
+                            <td>Priya Mehta</td>
+                            <td>8 files</td>
+                            <td>
+                                <div style="width: 100px;">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 60%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-pending">Processing</span></td>
+                            <td>15 minutes ago</td>
+                        </tr>
+                        <tr>
+                            <td><span style="font-family: var(--font-mono); font-size: 13px;">#BAT-003</span></td>
+                            <td>Amit Patel</td>
+                            <td>22 files</td>
+                            <td>
+                                <div style="width: 100px;">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge status-pending">Queued</span></td>
+                            <td>Just now</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">📝 Recent Activity</h2>
+                <div class="card-actions">
+                    <button class="btn-sm">View All</button>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">10:42 AM</div>
+                <div class="activity-content">
+                    <div class="activity-user">Dr. Priya Sharma</div>
+                    <div class="activity-action">Created prescription for Rajesh Kumar (3 medications)</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">10:35 AM</div>
+                <div class="activity-content">
+                    <div class="activity-user">System</div>
+                    <div class="activity-action">ABDM consent approved for Patient #45678</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">10:28 AM</div>
+                <div class="activity-content">
+                    <div class="activity-user">Dr. Suresh Nair</div>
+                    <div class="activity-action">Completed Ayurvedic assessment for Priya Mehta</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">10:15 AM</div>
+                <div class="activity-content">
+                    <div class="activity-user">Admin</div>
+                    <div class="activity-action">Uploaded batch of 15 documents for OCR processing</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-time">09:58 AM</div>
+                <div class="activity-content">
+                    <div class="activity-user">Dr. Rahul Kapoor</div>
+                    <div class="activity-action">Signed digital prescription using e-signature</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compliance Dashboard -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🛡️ Compliance Overview</h2>
+                <div class="card-actions">
+                    <button class="btn-sm">Download Report</button>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg);">
+                <div>
+                    <div style="font-weight: 600; margin-bottom: var(--space-sm);">NMC Compliance</div>
+                    <div style="font-size: 32px; font-weight: 700; color: var(--success); margin-bottom: var(--space-xs);">98.4%</div>
+                    <div style="font-size: 13px; color: var(--gray-500);">All prescriptions generic-first</div>
+                </div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: var(--space-sm);">ABDM Integration</div>
+                    <div style="font-size: 32px; font-weight: 700; color: var(--success); margin-bottom: var(--space-xs);">99.2%</div>
+                    <div style="font-size: 13px; color: var(--gray-500);">API calls successful</div>
+                </div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: var(--space-sm);">Data Residency</div>
+                    <div style="font-size: 32px; font-weight: 700; color: var(--success); margin-bottom: var(--space-xs);">100%</div>
+                    <div style="font-size: 13px; color: var(--gray-500);">All data in India</div>
+                </div>
+            </div>
+
+            <div style="margin-top: var(--space-xl); padding: var(--space-lg); background: #E8F5E9; border-radius: 8px; border-left: 4px solid var(--success);">
+                <div style="display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-xs);">
+                    <span style="font-size: 20px;">✓</span>
+                    <strong>System Compliant</strong>
+                </div>
+                <div style="font-size: 14px; color: var(--gray-700);">All regulatory requirements met. Next audit scheduled for March 15, 2026.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate real-time updates
+        setInterval(() => {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                if (bar.style.width !== '100%' && bar.style.width !== '0%') {
+                    const current = parseInt(bar.style.width);
+                    if (current < 100) {
+                        bar.style.width = (current + Math.random() * 10) + '%';
+                    }
+                }
+            });
+        }, 2000);
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

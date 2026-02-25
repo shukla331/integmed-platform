@@ -168,14 +168,14 @@ export default function LoginPage() {
               }}
               className="w-full text-primary-500 text-sm hover:text-primary-700"
             >
-              ← Change mobile number
+              â† Change mobile number
             </button>
           </form>
         )}
 
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-gray-100 text-center text-xs text-gray-400">
-          <p>🏥 IntegMed • Demo Environment</p>
+          <p>ðŸ¥ IntegMed â€¢ Demo Environment</p>
           <p className="mt-1">Real HPR integration pending government approval</p>
         </div>
 
@@ -207,7 +207,7 @@ export default function LoginPage() {
           }}
           className="mt-6 w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 animate-pulse"
         >
-          🚀 SKIP LOGIN - GO TO DASHBOARD
+          ðŸš€ SKIP LOGIN - GO TO DASHBOARD
         </button>
         <p className="text-center text-xs text-gray-400 mt-2">
           (For demo/testing only - bypasses authentication)
