@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const baseApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -6,13 +8,13 @@ const nextConfig = {
     domains: ['localhost', 'integmed.health'],
   },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+    NEXT_PUBLIC_API_URL: baseApiUrl,
   },
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
+        destination: `${baseApiUrl}/api/:path*`,
       },
     ];
   },
